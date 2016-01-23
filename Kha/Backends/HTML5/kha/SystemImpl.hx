@@ -47,6 +47,7 @@ class SystemImpl {
 	public static function init(title: String, width: Int, height: Int, callback: Void -> Void) {
         #if sys_debug_html5
         // Wait a second so the debugger can attach
+		untyped require('web-frame').setZoomLevelLimits(1, 1);
         Browser.window.setTimeout(function () {
             init2();
             callback();   
@@ -304,6 +305,8 @@ class SystemImpl {
 		canvas.onmousemove = mouseMove;
 		canvas.onkeydown = keyDown;
 		canvas.onkeyup = keyUp;
+		canvas.onblur = onBlur;
+		canvas.onfocus = onFocus;
 		untyped if (canvas.onwheel) canvas.onwheel = mouseWheel;
 		else if (canvas.onmousewheel) canvas.onmousewheel = mouseWheel;
 		canvas.addEventListener("wheel mousewheel", mouseWheel, false);
@@ -478,6 +481,16 @@ class SystemImpl {
 			surface.sendMoveEvent(touch.identifier, touchX, touchY);
 			index++;
 		}
+	}
+
+	private static function onBlur() {
+		// System.pause();
+		System.background();
+	}
+
+	private static function onFocus() {
+		// System.resume();
+		System.foreground();
 	}
 	
 	private static function keycodeToChar(key: String, keycode: Int, shift: Bool): String {
